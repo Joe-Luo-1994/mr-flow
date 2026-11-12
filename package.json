@@ -1,0 +1,16 @@
+{
+  "name": "mr-flow-starter",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Dependency-free deterministic MR triage core with synthetic fixtures",
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "test": "npm run build && node --test tests/*.test.mjs",
+    "demo": "npm run build && node tools/demo.mjs",
+    "report": "npm run build && node tools/report.mjs"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}
