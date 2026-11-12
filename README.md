@@ -22,9 +22,9 @@ npm run report
 node tools/report.mjs internal/normalized.json output/internal-report.html
 ```
 
-The archive includes precompiled `dist/`, so a machine with Node.js 22+ can also run `node --test tests/*.test.mjs`, `node tools/demo.mjs`, and `node tools/report.mjs` **without** installing TypeScript.
+The GitHub repository intentionally does not track generated `dist/` or `output/` files. Run `npm install` (or `npm ci` after a lockfile is added), then `npm test` to build and test. The downloadable starter ZIP from the original ChatGPT conversation includes a precompiled `dist/` for restricted environments.
 
-To install TypeScript on a permitted external machine: `npm install` (do not assume external package registries are available from the company network). Compile outside and carry the files if company policy permits; preserve the source and tests for auditing.
+Do not assume external package registries are available from the company network. Compile in an approved environment and follow company policy for moving files; preserve sources and tests for auditing.
 
 ## Structure
 
