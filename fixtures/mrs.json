@@ -1,0 +1,267 @@
+[
+  {
+    "projectId": 100,
+    "authorId": 11,
+    "reviewerIds": [],
+    "approvedByIds": [],
+    "unresolvedThreads": 0,
+    "pipeline": "unknown",
+    "mergeability": "unknown",
+    "onHold": false,
+    "draft": true,
+    "approvalPolicy": {
+      "kind": "unknown"
+    },
+    "iid": 101,
+    "title": "Draft UI cleanup",
+    "webUrl": "https://gitlab.example.invalid/team/app/-/merge_requests/101",
+    "headSha": "synthetic101"
+  },
+  {
+    "projectId": 100,
+    "authorId": 11,
+    "reviewerIds": [],
+    "approvedByIds": [],
+    "unresolvedThreads": 0,
+    "pipeline": "success",
+    "mergeability": "mergeable",
+    "onHold": false,
+    "draft": false,
+    "approvalPolicy": {
+      "kind": "unknown"
+    },
+    "iid": 102,
+    "title": "Fix permission label",
+    "webUrl": "https://gitlab.example.invalid/team/app/-/merge_requests/102",
+    "headSha": "synthetic102"
+  },
+  {
+    "projectId": 100,
+    "authorId": 11,
+    "reviewerIds": [
+      21
+    ],
+    "approvedByIds": [],
+    "unresolvedThreads": 0,
+    "pipeline": "success",
+    "mergeability": "mergeable",
+    "onHold": false,
+    "draft": false,
+    "approvalPolicy": {
+      "kind": "any_assigned",
+      "count": 1
+    },
+    "iid": 103,
+    "title": "Refactor local cache",
+    "webUrl": "https://gitlab.example.invalid/team/app/-/merge_requests/103",
+    "headSha": "synthetic103"
+  },
+  {
+    "projectId": 100,
+    "authorId": 11,
+    "reviewerIds": [
+      21,
+      22
+    ],
+    "approvedByIds": [
+      21
+    ],
+    "unresolvedThreads": 0,
+    "pipeline": "success",
+    "mergeability": "mergeable",
+    "onHold": false,
+    "draft": false,
+    "approvalPolicy": {
+      "kind": "named",
+      "requiredUserIds": [
+        21,
+        22
+      ]
+    },
+    "iid": 104,
+    "title": "Authorization logic",
+    "webUrl": "https://gitlab.example.invalid/team/app/-/merge_requests/104",
+    "headSha": "synthetic104"
+  },
+  {
+    "projectId": 100,
+    "authorId": 11,
+    "reviewerIds": [
+      21
+    ],
+    "approvedByIds": [
+      21
+    ],
+    "unresolvedThreads": 2,
+    "pipeline": "success",
+    "mergeability": "mergeable",
+    "onHold": false,
+    "draft": false,
+    "approvalPolicy": {
+      "kind": "any_assigned",
+      "count": 1
+    },
+    "iid": 105,
+    "title": "Editor keyboard shortcuts",
+    "webUrl": "https://gitlab.example.invalid/team/app/-/merge_requests/105",
+    "headSha": "synthetic105"
+  },
+  {
+    "projectId": 100,
+    "authorId": 11,
+    "reviewerIds": [
+      21
+    ],
+    "approvedByIds": [
+      21
+    ],
+    "unresolvedThreads": 0,
+    "pipeline": "failed",
+    "mergeability": "blocked",
+    "onHold": false,
+    "draft": false,
+    "approvalPolicy": {
+      "kind": "any_assigned",
+      "count": 1
+    },
+    "iid": 106,
+    "title": "Build configuration",
+    "webUrl": "https://gitlab.example.invalid/team/app/-/merge_requests/106",
+    "headSha": "synthetic106"
+  },
+  {
+    "projectId": 100,
+    "authorId": 11,
+    "reviewerIds": [
+      21
+    ],
+    "approvedByIds": [
+      21
+    ],
+    "unresolvedThreads": 0,
+    "pipeline": "success",
+    "mergeability": "mergeable",
+    "onHold": false,
+    "draft": false,
+    "approvalPolicy": {
+      "kind": "any_assigned",
+      "count": 1
+    },
+    "iid": 107,
+    "title": "Add activity panel",
+    "webUrl": "https://gitlab.example.invalid/team/app/-/merge_requests/107",
+    "headSha": "synthetic107"
+  },
+  {
+    "projectId": 100,
+    "authorId": 11,
+    "reviewerIds": [
+      21
+    ],
+    "approvedByIds": [
+      21
+    ],
+    "unresolvedThreads": 0,
+    "pipeline": "success",
+    "mergeability": "mergeable",
+    "onHold": false,
+    "draft": false,
+    "approvalPolicy": {
+      "kind": "unknown"
+    },
+    "iid": 108,
+    "title": "Migration preparation",
+    "webUrl": "https://gitlab.example.invalid/team/app/-/merge_requests/108",
+    "headSha": "synthetic108"
+  },
+  {
+    "projectId": 100,
+    "authorId": 11,
+    "reviewerIds": [
+      21
+    ],
+    "approvedByIds": [],
+    "unresolvedThreads": 0,
+    "pipeline": "success",
+    "mergeability": "mergeable",
+    "onHold": true,
+    "draft": false,
+    "approvalPolicy": {
+      "kind": "any_assigned",
+      "count": 1
+    },
+    "iid": 109,
+    "title": "Defer feature to next release",
+    "webUrl": "https://gitlab.example.invalid/team/app/-/merge_requests/109",
+    "headSha": "synthetic109"
+  },
+  {
+    "projectId": 100,
+    "authorId": 11,
+    "reviewerIds": [
+      21
+    ],
+    "approvedByIds": [
+      21
+    ],
+    "unresolvedThreads": null,
+    "pipeline": "success",
+    "mergeability": "mergeable",
+    "onHold": false,
+    "draft": false,
+    "approvalPolicy": {
+      "kind": "any_assigned",
+      "count": 1
+    },
+    "iid": 110,
+    "title": "Unknown discussion visibility",
+    "webUrl": "https://gitlab.example.invalid/team/app/-/merge_requests/110",
+    "headSha": "synthetic110"
+  },
+  {
+    "projectId": 100,
+    "authorId": 11,
+    "reviewerIds": [
+      21
+    ],
+    "approvedByIds": [
+      21
+    ],
+    "unresolvedThreads": 0,
+    "pipeline": "success",
+    "mergeability": "unknown",
+    "onHold": false,
+    "draft": false,
+    "approvalPolicy": {
+      "kind": "any_assigned",
+      "count": 1
+    },
+    "iid": 111,
+    "title": "Unknown mergeability",
+    "webUrl": "https://gitlab.example.invalid/team/app/-/merge_requests/111",
+    "headSha": "synthetic111"
+  },
+  {
+    "projectId": 100,
+    "authorId": 11,
+    "reviewerIds": [
+      21
+    ],
+    "approvedByIds": [
+      21
+    ],
+    "unresolvedThreads": 1,
+    "pipeline": "running",
+    "mergeability": "unknown",
+    "onHold": false,
+    "draft": false,
+    "approvalPolicy": {
+      "kind": "any_assigned",
+      "count": 1
+    },
+    "iid": 112,
+    "title": "Reviewer comments need triage",
+    "webUrl": "https://gitlab.example.invalid/team/app/-/merge_requests/112",
+    "headSha": "synthetic112"
+  }
+]
