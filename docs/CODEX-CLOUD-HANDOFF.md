@@ -1,60 +1,17 @@
-# Codex Cloud handoff — MR Flow v0.1
+# 外部／Cloud 交接
 
-## What is already done
-This is a synthetic-data-only prototype, prepared outside the company. It includes:
+讀 AGENTS.md、PRODUCT.md、README.md、STATE-MODEL.md、REVIEW-INTEGRATION.md 與 ACCEPTANCE.md。只用合成資料，不連公司 GitLab、不索取 token、不上傳實際 skill 或公司內容。
 
-- A pure TypeScript triage engine: `src/triage.ts`.
-- Synthetic scenarios: `fixtures/mrs.json` and `tests/triage.test.mjs`.
-- CLI and offline HTML reporting: `tools/demo.mjs`, `tools/report.mjs`.
-- Product principles, state semantics, draft workflow agreement, and a decision log.
+## 目前成果
 
-The previous conversation established three product values:
-1. **Visibility** — identify what we know and what is unknown about each MR.
-2. **Coordination** — explain the next actionable step, likely owner, and evidence without blaming people.
-3. **Decision Quality** — eventually learn from repeated review/rework and improve change safety.
+原有純 TypeScript triage、合成 tests／fixtures、CLI、離線報表仍保留。新文件收斂版本證據、作者回應與複核、可選 Label；獨立 prototype/review-flow.html 模擬核心路徑。未修改 baseline 引擎實作新契約，沒有 adapter、writer、AI runtime 或服務。
 
-## Environment separation
+## 本輪與接續
 
-**Codex Cloud (this repository):** research, refine product hypotheses, test deterministic models, develop synthetic scenario coverage and UI prototypes. No company network or real GitLab data.
+本輪已完成兩輪改善＋獨立 review，未解重要缺口為零；實測範圍及未驗證項目見 ACCEPTANCE.md。依 ACCEPTANCE.md 找反例、回報實際執行與未執行；不能由舊測試通過宣稱新整合正確。沿用授權，不重複要求每個小修正批准。
 
-**Company Dev VM (future):** approved `glab` CLI; validate GitLab CE version/API responses; implement a read-only adapter to `MRObservation`; compare with 5–10 real MRs. Keep raw responses and internal data inside the company. See `docs/INTERNAL-VALIDATION.md` and `docs/AGENT-HANDOFF.md`.
+以取消訂單案例檢查推薦 → 接手 → 人確認 → 發布失敗／恢復 → 作者回應 → 局部複核。另檢查空結論、版本上下文、多人並行、缺失來源與個人略過。共享訊息須足以理解問題，不要求拼接 logs。
 
-Do not attempt to connect Codex Cloud to company GitLab or move internal metadata into public/private cloud repositories without explicit organizational approval.
+完成最小外部成果後，內部能力交 INTERNAL-VALIDATION.md。真人價值不能由 agent 走查代替；不擅自新增 runtime、framework、後端、排程、hosting 或真實寫入。
 
-## Current known decisions
-- `glab` is the preferred *future internal* transport, subject to installed-version verification.
-- GitLab remains the source of truth; no duplicate manual status system.
-- Policy and observations are distinct; CE's `approved` does not mean the team's multi-approver policy is satisfied.
-- No SLO inferred from a generic `updated_at` timestamp.
-- No AI or automatic reminders until deterministic correctness is validated.
-
-## First cloud experiment (recommended)
-
-Goal: make the existing output more **actionable** without increasing architecture complexity.
-
-1. Inspect the current model, fixtures, and generated report. Run existing tests and report actual results.
-2. Identify at most **three** concrete ways the model/report might mislead reviewers or authors. Each needs a synthetic counterexample.
-3. Propose **one** small experiment with acceptance criteria and a low-complexity alternative.
-4. Wait for the user's decision before broad changes; an approved small change should include tests, updated generated report, and a short findings summary.
-
-Candidate themes: clearer next-actor uncertainty, review-vs-author waiting, approval policy visibility, triage prioritization, actionable dashboard UX. Do **not** build integrations, polling, or AI workflows in this experiment.
-
-## Acceptance criteria
-- Pure tests remain deterministic and require no company data.
-- Evidence and uncertainty appear in both the underlying result and the UI.
-- No feature depends on a real company token, hostname, MR, or permission.
-- Any new rule names its underlying assumptions and a counterexample.
-- Changes reduce ambiguity or coordination effort; cosmetic growth alone is not success.
-
-## Open decisions
-- What is the actual team approval policy (different for critical modules)?
-- What constitutes an explicit hold or release dependency?
-- Who owns merge after approval and how should that be communicated?
-- Which GitLab CE review-progress fields exist in the deployed version?
-- Which local reminder surface is approved and actually useful?
-
-These questions should not block synthetic cloud research. Do not invent their answers.
-
-## Suggested first message to Codex
-
-> Read `AGENTS.md`, `PRODUCT.md`, `README.md`, `docs/STATE-MODEL.md`, `docs/DECISIONS.md`, and `docs/CODEX-CLOUD-HANDOFF.md`. Run the existing synthetic tests and inspect the current report. Our next goal is to improve Visibility and Coordination with the smallest possible experiment, without real GitLab access. Identify up to three important gaps, cite concrete code/fixture evidence, propose one prioritized experiment and acceptance criteria, and stop before implementation so we can agree on scope. Do not add infrastructure or AI integrations.
+交接記錄改動、命令與結果、review 尚存問題及實際環境未驗證項目。時間／費用無可靠資料就標未知；更新既有入口，不複製平行規格。

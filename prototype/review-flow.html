@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MR Flow — Review 與交接走查</title>
+<style>
+:root{color-scheme:light dark;--bg:light-dark(#f4f6fa,#141923);--paper:light-dark(#fff,#202734);--ink:light-dark(#1c293c,#eaf0fa);--muted:light-dark(#526178,#b6c3d7);--line:light-dark(#d8e0ec,#435169);--accent:light-dark(#254db0,#b1c8ff);--soft:light-dark(#edf2ff,#2c3a53)}
+*{box-sizing:border-box}body{overflow-wrap:anywhere;margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,'Microsoft JhengHei',sans-serif}main{max-width:1040px;margin:32px auto;padding:0 24px}header>div{min-width:0}header>button{flex-shrink:0}header{display:flex;justify-content:space-between;gap:20px;align-items:center;margin-bottom:24px}h1{font-size:24px;margin:0}h2{font-size:20px;margin:0 0 10px}h3{font-size:16px;margin:0 0 8px}p{margin:0 0 10px}.small{font-size:13px;color:var(--muted)}.shell{background:var(--paper);border:1px solid var(--line);border-radius:14px;overflow:hidden}.top{padding:22px 24px;border-bottom:1px solid var(--line)}.grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(240px,1fr)}.task{padding:24px}.context{padding:24px;border-left:1px solid var(--line)}.summary{font-size:20px;font-weight:600}button{font:inherit;cursor:pointer;padding:10px 16px;border:1px solid var(--line);border-radius:7px;color:var(--ink);background:var(--paper);min-height:44px}button:hover{background:var(--soft)}button.primary{color:var(--paper);background:var(--ink);border-color:var(--ink)}button:disabled{opacity:.6;cursor:default}button:focus-visible,summary:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:3px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}details{margin-top:16px}summary{cursor:pointer;color:var(--accent);padding:6px 0}.box{padding:16px;background:var(--bg);border-radius:8px;margin-top:10px}.people{padding:10px 0;border-bottom:1px solid var(--line)}.people:last-child{border:0}.people strong{display:block}.notice{border-left:3px solid var(--accent);padding:10px 14px;background:var(--soft);margin-top:16px}.tag{display:inline-block;padding:3px 9px;background:var(--soft);border-radius:5px;font-size:13px;margin:3px 4px 3px 0}.log{margin:20px 0 0;padding:0;list-style:none}.log li{padding:14px 0;border-top:1px solid var(--line)}.log a,a{color:var(--accent)}pre{white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.6 ui-monospace,monospace;margin:8px 0}footer{margin-top:16px}.demo{padding:16px 24px;border-top:1px solid var(--line)}label{display:flex;gap:10px;align-items:start;margin:8px 0}input[type=checkbox]{margin-top:6px;accent-color:var(--accent)}[hidden]{display:none!important}@media(max-width:720px){main{margin:16px auto;padding:0 12px}.grid{grid-template-columns:1fr}.context{border-left:0;border-top:1px solid var(--line)}header{align-items:start}.task,.context,.top,.demo{padding:18px}.summary{font-size:18px}}
+</style>
+</head>
+<body><main>
+<header><div><h1>MR Flow</h1><p class="small">合成流程走查 · 不連網、不發送、不更動 GitLab</p></div><button id="reset">重新走查</button></header>
+<div class="shell">
+ <div class="top"><p class="small">合成 MR !27 · Level 2（案例設定，不推導 reviewer 人數）</p><h2>取消訂單時，額度只能釋放一次</h2><p class="small" id="context"></p></div>
+ <div class="grid"><section class="task" aria-label="本輪任務"><p class="small" id="actor"></p><p class="summary" id="summary"></p><p id="reason"></p><div id="preview"></div><div class="actions"><button class="primary" id="next"></button><button id="skip">本輪先不處理</button></div><p class="small" role="status" aria-live="polite" id="status"></p></section>
+ <aside class="context" aria-label="共享脈絡"><h3>現在誰在做什麼</h3><div id="people"></div><details><summary>審查範圍與版本</summary><div class="box" id="evidence"></div></details><details><summary>協作標記</summary><div id="labels" class="box"></div></details></aside></div>
+ <div class="demo"><details><summary>合成驗證選項</summary><label><input type="checkbox" id="fail">下一次發布模擬「明確失敗」（不是逾時結果未知）</label><label><input type="checkbox" id="labelmode">模擬已具備可靠 Label 協調能力</label><p class="small">預設只用共享紀錄；Label 是可選摘要。選項不是部署設定，也不證明並行安全。</p></details></div>
+</div>
+<details id="history"><summary>展開共享紀錄與證據</summary><ol class="log" id="log"></ol><div class="box" id="code-evidence"><h3>合成程式證據</h3><p>Invariant：同一筆額度預留只能釋放一次。重複取消不得使可用額度再次增加。</p><pre id="code"></pre><p class="small">位置與 SHA 均為合成資料；用於辨認證據結構，不是可執行的公司程式或測試結果。</p></div></details>
+<footer class="small">每個按鈕模擬標示角色的一個動作。角色轉換是走查工具，不是替其他人作決定。重新整理會重置；此原型不實作 AI、排程、持久同步或發布 API。</footer>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const A='a'.repeat(40),B='b'.repeat(40),BASE='0'.repeat(40);
+const initialLog=()=>[{who:'C · 初始合成接手紀錄',text:'已接手事件語意範圍；reviewed head '+A+'；target main；base '+BASE+'。這是案例起點的來源快照，不表示此刻仍在閱讀。',id:'entry-1'}];
+let step=0,failed=false,skipped=false,log=initialLog();
+const views=[
+ ['Reviewer B','作者邀請你看取消流程','這件與你相關：作者請你確認 boundary 與 invariant。C 已接手另一個範圍，不代表有人替你看過。','啟動本輪 review'],
+ ['Reviewer B 的 skill','本輪已啟動，分析尚未完成','開始紀錄已模擬發布；其他人能看見你的範圍。分析完成不等於你確認了結論。','查看合成分析結果'],
+ ['Reviewer B','分析已就緒，請確認本輪結論','F-01：重複取消會再次釋放額度。規則應由 Domain 模組保護，不是在入口多加一個 if。','確認結論並發布'],
+ ['作者 A','本輪需要你回應 F-01','共享結果已有反例與證據。你可以在原討論回覆修改與請求；不用管理 Label 或填 round ID。','回覆：已提交 B，請 B 複核 F-01'],
+ ['Reviewer B','作者已回覆，邀請你複核 F-01','這是待接手的請求，不表示問題已修正，也不表示你已承諾再看。即使沒有任何 Label，這個請求也保留。','接手 F-01 複核'],
+ ['Reviewer B 的 skill','已接手局部複核，分析尚未完成','本輪只比較 A → B 的 F-01 及相關失敗路徑；不代表整個 MR 重新審查。','查看合成複核結果'],
+ ['Reviewer B','F-01 有新的修正證據，待你確認','在 B 中以 Domain 層的一次性釋放保護重複取消。此案例的觀察支持 F-01 修正，不涵蓋 C 的範圍。','確認局部結論並發布'],
+ ['團隊概覽','B 已完成 F-01 複核，C 仍有另一輪','作者目前沒有這項待回應事項。C 負責事件語意，B 的完成不會結束 C 的輪次。','模擬 C 確認並發布自己的結果'],
+ ['團隊概覽','兩個範圍的結果已共享','沒有把本輪無新增問題當成 approval 或可 merge。後續合併安排仍由作者與團隊確認。','流程已走完']
+];
+function record(who,text){log.push({who,text,id:'entry-'+(log.length+1)});}
+function transition(){
+ if(step===8)return;
+ const writes=[0,2,3,4,6,7].includes(step);
+ if(writes&&$('fail').checked){$('fail').checked=false;failed=true;render();return;}
+ failed=false;skipped=false;
+ if(step===0)record('B · R1 已啟動',`範圍：取消流程的 boundary／invariant。檢視 ${A}；target main；base ${BASE}。Agent 分析中。`);
+ if(step===2)record('B · R1 結論已確認',`F-01：同一取消命令重送，入口直接釋放會讓額度增加兩次，違反一次性釋放 invariant。請在 Domain 層維持此規則並補重複取消的觀察。證據：${A}，synthetic/cancel.ts L10–12。下一步：作者回應；不代表 approval。`);
+ if(step===3)record('作者 · 回應並請求複核',`F-01 已提交調整於 ${B}，一次性釋放放在 Domain 層。請 B 複核 F-01；尚未取得 B 接手確認，也未聲稱 reviewer 已驗證修正。`);
+ if(step===4)record('B · R2 接手',`接受作者對 F-01 的複核請求。比較 ${A} → ${B}；本輪比較起點 ${A}；target main@${BASE}；MR diff base ${BASE}。範圍只含 F-01 與取消失敗路徑。`);
+ if(step===6)record('B · R2 局部結論已確認',`F-01 在 ${B} 已修正：Domain releaseOnce 維持一次性釋放，合成觀察中兩次取消僅釋放一次。證據：synthetic/cancel.ts L10–12。本輪僅 F-01，C 的事件語意範圍未代為檢視；不代表 approve／merge。`);
+ if(step===7)record('C · 自己的輪次已完成',`已確認 ${B} 的事件語意範圍，無新增問題；不代替其他 approver 或作者的合併決定。`);
+ step++;render();
+}
+function render(){
+ const [actor,title,reason,action]=views[step];
+ $('actor').textContent=actor+' · 目前走查角色';$('summary').textContent=skipped?'本輪已略過，沒有發送或接手':failed&&[2,6].includes(step)?'結論已確認，尚未發布；可重試發布':title;
+ $('reason').textContent=skipped?'這只影響你的本輪選擇，沒有替全團隊暫緩。可恢復本輪；新的來源變更在正式設計中會重新評估。':reason;
+ $('next').textContent=skipped?'恢復本輪':failed?'重試未發布的這一步':action;$('next').disabled=step===8;
+ $('skip').hidden=![0,4].includes(step)||skipped;
+ $('status').textContent=failed?'模擬發布明確失敗：尚未完成交接，沒有新增紀錄或變更狀態。':step===1||step===3||step===4||step===5||step===7||step===8?'已模擬發布共享紀錄；未呼叫任何外部系統。':'';
+ const current=step>=4?B:A;
+ $('context').textContent=`目前版本 ${current.slice(0,8)} · target main · ${step>=5?'本輪只複核 F-01':'取消流程與事件語意分開審查'}`;
+ const b=step===0?'受邀，尚未接手':step<3?'R1 已啟動，待確認結論':step===3?'R1 結果已發布':step===4?'已受邀複核，尚未接手':step<7?'R2 已接手，僅 F-01':'R2 已完成，僅 F-01';
+ const author=step===3?'等待回應 F-01':step===4?'已回應，等待 B 接手':step>=5?'F-01 已回應':'沒有本輪待回應事項';
+ $('people').replaceChildren(...[['Reviewer B',b],['Reviewer C',step<8?'自己的事件語意輪次尚未結束':'自己的範圍已完成'],['作者 A',author]].map(([name,state])=>{const d=document.createElement('div');d.className='people';const h=document.createElement('strong');h.textContent=name;d.append(h,document.createTextNode(state));return d;}));
+ $('evidence').textContent=`目前 head：${current}。本輪 reviewed head：${step>=5?B:A}。Target：main@${BASE}。本輪比較起點：${step>=5?A:BASE}。MR diff base：${BASE}。${step>=5?'R2 比較 A → B；只驗證 F-01，不涵蓋整個 MR。':'R1 範圍：取消流程的 boundary／invariant。'} 所有資料均為合成快照。`;
+ $('preview').replaceChildren();
+ if(step===2||step===6){const d=document.createElement('details'),s=document.createElement('summary'),p=document.createElement('p'),a=document.createElement('a');s.textContent='確認前展開結論與證據';p.className='box';p.textContent=step===2?`結論：需要作者調整。原 invariant 是一次性釋放；重複取消的反例會破壞它。請把規則保護放在 Domain。檢視 ${A}，target main，base ${BASE}。`: `結論：F-01 已修正。只複核 ${A} → ${B}，本輪比較起點 ${A}，target main@${BASE}，MR diff base ${BASE}；不代表其他範圍已看過。合成觀察：取消兩次，釋放計數仍為一。`;a.href='#code-evidence';a.textContent='查看合成程式位置與反例';a.addEventListener('click',()=>{$('history').open=true;});d.append(s,p,a);$('preview').append(d);}
+ $('labels').textContent=!$('labelmode').checked?'未啟用自動 Label；共享紀錄與待接手請求仍可使用。':(step<8?'Review 進行中（至少 C 的輪次尚未結束）':'無進行中 review 標記')+(step===3?'；待作者回應 F-01':'')+'。這只是序列化條件成立時的合成預期，不是 API 測試。';
+ $('log').replaceChildren(...log.map(e=>{const li=document.createElement('li'),h=document.createElement('h3'),p=document.createElement('p');li.id=e.id;h.textContent=e.who;p.textContent=e.text;li.append(h,p);return li;}));
+ $('code').textContent=`A (${A}) — synthetic/cancel.ts\nL10 cancel(order) {\nL11   credit.release(order.reservation); // 每次呼叫都增加額度\nL12 }\n反例：同一 reservation 取消兩次 → 釋放兩次。\n\nB (${B}) — synthetic/cancel.ts\nL10 cancel(order) {\nL11   reservationDomain.releaseOnce(order.reservation);\nL12 }\n合成規格：Domain 層保留已釋放狀態，重複呼叫不增加額度。\n合成觀察：兩次取消 → release count = 1。\n這裡只是可讀的情境證據，不代表執行過該程式。`;
+}
+$('next').addEventListener('click',()=>{if(skipped){skipped=false;render();}else transition();});
+$('skip').addEventListener('click',()=>{skipped=true;render();});
+$('labelmode').addEventListener('change',render);
+$('reset').addEventListener('click',()=>{step=0;failed=false;skipped=false;log=initialLog();$('fail').checked=false;$('labelmode').checked=false;render();});
+render();
+</script></body></html>
