@@ -1,0 +1,16 @@
+import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { dirname } from 'node:path';
+import { deriveAll } from '../dist/triage.js';
+const input = process.argv[2];
+const output = process.argv[3] || 'output/mr-flow.html';
+const observations = JSON.parse(readFileSync(input || new URL('../fixtures/mrs.json', import.meta.url), 'utf8'));
+const findings = deriveAll(observations);
+const esc = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const rows = findings.map(x => '<tr data-action="' + esc(x.action) + '"><td><b>!' + x.iid + '</b><p>' + esc(x.title) + '</p></td><td>' + esc(x.action) + '</td><td>' + esc(x.nextActorIds.join(', ') || 'Unknown') + '</td><td>' + esc(x.rationale) + '</td><td>' + esc(x.confidence) + '</td><td><details><summary>Evidence</summary>' + esc(x.evidence.join('; ')) + '</details></td></tr>').join('');
+const statuses = [...new Set(findings.map(x => x.action))];
+const options = statuses.map(x => '<option value="' + esc(x) + '">' + esc(x) + '</option>').join('');
+const banner = input ? 'LOCAL INPUT — keep company MR metadata inside the approved environment.' : 'SYNTHETIC DATA ONLY — no company information.';
+const html = '<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MR Flow</title><style>body{font:14px system-ui,sans-serif;background:#f6f7f9;color:#172338;margin:40px auto;max-width:1150px;padding:0 20px}h1{margin-bottom:4px}.banner{padding:12px;background:#fff3cc;border-radius:8px;margin:18px 0}table{border-collapse:collapse;background:white;width:100%;font-size:13px}td,th{padding:13px;text-align:left;border-bottom:1px solid #eee;vertical-align:top}th{background:#ecf1f7}td p{color:#666;margin:6px 0}input,select{padding:9px;margin:0 8px 14px 0}summary{cursor:pointer}footer{margin-top:15px;color:#666}</style><h1>MR Flow</h1><p>Actionable merge request visibility · Offline prototype</p><div class="banner">' + esc(banner) + '</div><input id="search" placeholder="Search MR title or reason" aria-label="Search"><select id="action"><option value="">All actions</option>' + options + '</select><table><thead><tr><th>MR</th><th>Next action</th><th>Actor IDs</th><th>Reason</th><th>Confidence</th><th>Traceability</th></tr></thead><tbody id="rows">' + rows + '</tbody></table><footer>Informational only. Merge candidate does not authorize a merge. GitLab remains the source of truth.</footer><script>const search=document.getElementById("search"),action=document.getElementById("action");function filter(){for(const row of document.querySelectorAll("#rows tr"))row.hidden=!row.textContent.toLowerCase().includes(search.value.toLowerCase())||(action.value&&row.dataset.action!==action.value)}search.addEventListener("input",filter);action.addEventListener("change",filter);</script></html>';
+mkdirSync(dirname(output), {recursive:true});
+writeFileSync(output,html,'utf8');
+console.log('Generated ' + output);
