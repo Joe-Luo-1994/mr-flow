@@ -2,6 +2,10 @@
 
 把既有 Review skill 的必要證據與交接接到 GitLab，讓唯讀 MR Flow 提供可信下一步。保留分析核心與本地 HTML；公司資料、回應、憑證全留核准環境。
 
+## 可直接貼給內部 agent
+
+> 請接續 https://github.com/Joe-Luo-1994/mr-flow：先讀實際全域／專案 AGENTS.md 與 docs/AGENT-HANDOFF.md 指向的文件，再唯讀核對現有個人 Review skill、GitLab CE／glab 的能力與權限；依既有授權完成最小的開始訊號、確認後發布、作者回應與複核交接整合，保留證據與多人 review 語意。MR Flow 維持唯讀，先用 comment，Label 依文件門檻啟用；公司資料留內部，不擴展 roadmap。完成後回報實測、未知並更新既有交接文件。
+
 ## 接手順序
 
 1. 讀 PRODUCT.md、STATE-MODEL.md、REVIEW-INTEGRATION.md、INTERNAL-VALIDATION.md、ACCEPTANCE.md，跑既有合成測試。
